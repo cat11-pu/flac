@@ -272,6 +272,12 @@ namespace FLAC {
 			return static_cast<bool>(::FLAC__stream_decoder_seek_absolute(decoder_, sample));
 		}
 
+		bool Stream::seek_absolute_time_ms(FLAC__uint64 time_ms)
+		{
+			FLAC__ASSERT(is_valid());
+			return static_cast<bool>(::FLAC__stream_decoder_seek_absolute_time_ms(decoder_, time_ms));
+		}
+
 		::FLAC__StreamDecoderSeekStatus Stream::seek_callback(FLAC__uint64 absolute_byte_offset)
 		{
 			(void)absolute_byte_offset;

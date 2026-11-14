@@ -1779,6 +1779,42 @@ FLAC_API FLAC__bool FLAC__stream_decoder_skip_single_link(FLAC__StreamDecoder *d
  */
 FLAC_API FLAC__bool FLAC__stream_decoder_seek_absolute(FLAC__StreamDecoder *decoder, FLAC__uint64 sample);
 
+/** Flush the input and seek to an absolute time, expressed in
+ *  milliseconds from the beginning of the stream.
+ *
+ *  This is a convenience wrapper around
+ *  FLAC__stream_decoder_seek_absolute(): the time is converted to a
+ *  sample number with
+ *  \code sample = time_ms * sample_rate / 1000 \endcode
+ *  rounded down, so the decoder never lands past the requested time.
+ *  The rounding error is less than one sample period, i.e. far less
+ *  than one frame, and decoding resumes at exactly that sample, so
+ *  the output is sample-for-sample identical to decoding the stream
+ *  sequentially from the beginning.  All notes and caveats of
+ *  FLAC__stream_decoder_seek_absolute() apply.
+ *
+ *  Boundary handling:
+ *  - \a time_ms of 0 seeks to the very first sample.
+ *  - If the converted target sample is at or past the end of the
+ *    stream (and the total sample count is known), the function
+ *    fails and returns \c false, just like
+ *    FLAC__stream_decoder_seek_absolute().
+ *  - If the total sample count is unknown, a seek past the end of
+ *    the stream leaves the decoder in the
+ *    \c FLAC__STREAM_DECODER_END_OF_STREAM state.
+ *  - If the sample rate of the stream is not (yet) known, the
+ *    function fails and returns \c false.
+ *
+ * \param  decoder  A decoder instance.
+ * \param  time_ms  The target time in milliseconds from the
+ *                  beginning of the stream.
+ * \assert
+ *    \code decoder != NULL \endcode
+ * \retval FLAC__bool
+ *    \c true if successful, else \c false.
+ */
+FLAC_API FLAC__bool FLAC__stream_decoder_seek_absolute_time_ms(FLAC__StreamDecoder *decoder, FLAC__uint64 time_ms);
+
 /* \} */
 
 #ifdef __cplusplus

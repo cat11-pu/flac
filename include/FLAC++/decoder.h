@@ -163,6 +163,8 @@ namespace FLAC {
 			virtual bool skip_single_link();              ///< See FLAC__stream_decoder_skip_single_link()
 
 			virtual bool seek_absolute(FLAC__uint64 sample); ///< See FLAC__stream_decoder_seek_absolute()
+
+			virtual bool seek_absolute_time_ms(FLAC__uint64 time_ms); ///< See FLAC__stream_decoder_seek_absolute_time_ms()
 		protected:
 			/// see FLAC__StreamDecoderReadCallback
 			virtual ::FLAC__StreamDecoderReadStatus read_callback(FLAC__byte buffer[], size_t *bytes) = 0;

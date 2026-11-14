@@ -1346,6 +1346,59 @@ FLAC_API FLAC__bool FLAC__stream_decoder_seek_absolute(FLAC__StreamDecoder *deco
 	}
 }
 
+FLAC_API FLAC__bool FLAC__stream_decoder_seek_absolute_time_ms(FLAC__StreamDecoder *decoder, FLAC__uint64 time_ms)
+{
+	FLAC__uint64 sample_rate, seconds, remainder, sample;
+
+	FLAC__ASSERT(0 != decoder);
+
+	if(
+		decoder->protected_->state != FLAC__STREAM_DECODER_SEARCH_FOR_METADATA &&
+		decoder->protected_->state != FLAC__STREAM_DECODER_READ_METADATA &&
+		decoder->protected_->state != FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC &&
+		decoder->protected_->state != FLAC__STREAM_DECODER_READ_FRAME &&
+		decoder->protected_->state != FLAC__STREAM_DECODER_END_OF_STREAM
+	)
+		return false;
+
+	/* if we haven't finished processing the metadata yet, do that so we have the STREAMINFO */
+	if(
+		decoder->protected_->state == FLAC__STREAM_DECODER_SEARCH_FOR_METADATA ||
+		decoder->protected_->state == FLAC__STREAM_DECODER_READ_METADATA
+	) {
+		if(!FLAC__stream_decoder_process_until_end_of_metadata(decoder))
+			/* above call sets the state for us */
+			return false;
+	}
+
+	/* the sample rate is taken from the STREAMINFO if we have it, else
+	 * from the last decoded frame (which also covers the case of a
+	 * decoder that reached the end of stream)
+	 */
+	if(decoder->private_->has_stream_info)
+		sample_rate = decoder->private_->stream_info.data.stream_info.sample_rate;
+	else
+		sample_rate = decoder->protected_->sample_rate;
+
+	if(sample_rate == 0)
+		return false;
+
+	/* convert the time to a sample number, rounding down so the decoder
+	 * never lands past the requested time; the conversion is done
+	 * overflow-safe, saturating to the largest possible sample number,
+	 * which will simply fail the range check in
+	 * FLAC__stream_decoder_seek_absolute() like any out-of-range seek
+	 */
+	seconds = time_ms / 1000;
+	remainder = time_ms % 1000;
+	if(seconds > (~(FLAC__uint64)0 - sample_rate) / sample_rate)
+		sample = ~(FLAC__uint64)0;
+	else
+		sample = seconds * sample_rate + (remainder * sample_rate) / 1000;
+
+	return FLAC__stream_decoder_seek_absolute(decoder, sample);
+}
+
 FLAC_API FLAC__uint64 FLAC__stream_decoder_find_total_samples(FLAC__StreamDecoder *decoder)
 {
 	if(
