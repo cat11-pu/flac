@@ -438,6 +438,11 @@ static FLAC__bool stream_decoder_test_respond_(FLAC__StreamDecoder *decoder, Str
 		return die_s_("returned false", decoder);
 	printf("OK\n");
 
+	printf("testing FLAC__stream_decoder_get_samples_decoded()... ");
+	if(FLAC__stream_decoder_get_samples_decoded(decoder) != samples_)
+		return die_s_("returned wrong number of samples", decoder);
+	printf("OK\n");
+
         if(is_chained_ogg && dcd->layer != LAYER_STREAM) {
 		dcd->current_metadata_number = 0;
 

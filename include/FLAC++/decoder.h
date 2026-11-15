@@ -137,6 +137,7 @@ namespace FLAC {
 			virtual bool get_decode_chained_stream() const;                   ///< See FLAC__stream_decoder_get_decode_chained_stream()
 			virtual bool get_md5_checking() const;                            ///< See FLAC__stream_decoder_get_md5_checking()
 			virtual FLAC__uint64 get_total_samples() const;                   ///< See FLAC__stream_decoder_get_total_samples()
+			virtual FLAC__uint64 get_samples_decoded() const;                 ///< See FLAC__stream_decoder_get_samples_decoded()
 			virtual FLAC__uint64 find_total_samples();			  ///< See FLAC__stream_decoder_find_total_samples()
 			virtual uint32_t get_channels() const;                            ///< See FLAC__stream_decoder_get_channels()
 			virtual ::FLAC__ChannelAssignment get_channel_assignment() const; ///< See FLAC__stream_decoder_get_channel_assignment()

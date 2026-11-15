@@ -146,6 +146,12 @@ namespace FLAC {
 			return ::FLAC__stream_decoder_get_total_samples(decoder_);
 		}
 
+		FLAC__uint64 Stream::get_samples_decoded() const
+		{
+			FLAC__ASSERT(is_valid());
+			return ::FLAC__stream_decoder_get_samples_decoded(decoder_);
+		}
+
 		FLAC__uint64 Stream::find_total_samples()
 		{
 			FLAC__ASSERT(is_valid());

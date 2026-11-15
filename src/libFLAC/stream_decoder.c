@@ -865,6 +865,13 @@ FLAC_API FLAC__uint64 FLAC__stream_decoder_get_total_samples(const FLAC__StreamD
 	return decoder->private_->has_stream_info? decoder->private_->stream_info.data.stream_info.total_samples : 0;
 }
 
+FLAC_API FLAC__uint64 FLAC__stream_decoder_get_samples_decoded(const FLAC__StreamDecoder *decoder)
+{
+	FLAC__ASSERT(0 != decoder);
+	FLAC__ASSERT(0 != decoder->private_);
+	return decoder->private_->samples_decoded;
+}
+
 FLAC_API uint32_t FLAC__stream_decoder_get_channels(const FLAC__StreamDecoder *decoder)
 {
 	FLAC__ASSERT(0 != decoder);
@@ -2230,7 +2237,7 @@ FLAC__bool read_metadata_picture_(FLAC__StreamDecoder *decoder, FLAC__StreamMeta
 	/* read MIME type */
 	if(!FLAC__bitreader_read_raw_uint32(decoder->private_->input, &x, FLAC__STREAM_METADATA_PICTURE_MIME_TYPE_LENGTH_LEN))
 		return false; /* read_callback_ sets the state for us */
-	if(FLAC__bitreader_limit_remaining(decoder->private_->input) < x){
+	if(FLAC__bitreader_limit_remaining(decoder->private_->input) / 8 < x){
 		FLAC__bitreader_limit_invalidate(decoder->private_->input);
 		return false;
 	}
@@ -2247,7 +2254,7 @@ FLAC__bool read_metadata_picture_(FLAC__StreamDecoder *decoder, FLAC__StreamMeta
 	/* read description */
 	if(!FLAC__bitreader_read_raw_uint32(decoder->private_->input, &x, FLAC__STREAM_METADATA_PICTURE_DESCRIPTION_LENGTH_LEN))
 		return false; /* read_callback_ sets the state for us */
-	if(FLAC__bitreader_limit_remaining(decoder->private_->input) < x){
+	if(FLAC__bitreader_limit_remaining(decoder->private_->input) / 8 < x){
 		FLAC__bitreader_limit_invalidate(decoder->private_->input);
 		return false;
 	}
@@ -2280,7 +2287,7 @@ FLAC__bool read_metadata_picture_(FLAC__StreamDecoder *decoder, FLAC__StreamMeta
 	/* read data */
 	if(!FLAC__bitreader_read_raw_uint32(decoder->private_->input, &(obj->data_length), FLAC__STREAM_METADATA_PICTURE_DATA_LENGTH_LEN))
 		return false; /* read_callback_ sets the state for us */
-	if(FLAC__bitreader_limit_remaining(decoder->private_->input) < obj->data_length){
+	if(FLAC__bitreader_limit_remaining(decoder->private_->input) / 8 < obj->data_length){
 		FLAC__bitreader_limit_invalidate(decoder->private_->input);
 		return false;
 	}

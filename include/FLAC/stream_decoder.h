@@ -995,6 +995,22 @@ FLAC_API FLAC__bool FLAC__stream_decoder_get_md5_checking(const FLAC__StreamDeco
  */
 FLAC_API FLAC__uint64 FLAC__stream_decoder_get_total_samples(const FLAC__StreamDecoder *decoder);
 
+/** Get the number of samples that have been successfully decoded.
+ *
+ *  This is the sample offset immediately after the most recently decoded
+ *  frame.  If decoding fails, including because the input is truncated, the
+ *  value remains at the last complete frame so callers can report where
+ *  decoding stopped.  Flushing and resetting the decoder set the value to
+ *  zero; seeking updates it to the end of the frame containing the target.
+ *
+ * \param  decoder  A decoder instance to query.
+ * \assert
+ *    \code decoder != NULL \endcode
+ * \retval FLAC__uint64
+ *    See above.
+ */
+FLAC_API FLAC__uint64 FLAC__stream_decoder_get_samples_decoded(const FLAC__StreamDecoder *decoder);
+
 /** Seek to the end of the file being decoded to find the total number
  *  of samples. This will return a number of samples even if
  *  FLAC__stream_decoder_get_total_samples() returns 0. It can also
