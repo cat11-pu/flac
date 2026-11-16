@@ -439,7 +439,9 @@ extern FLAC_API const char * const FLAC__StreamDecoderWriteStatusString[];
  *  caused by finding data that doesn't fit a metadata block (too large
  *  or too small) or finding inconsistencies in the metadata, for example
  *  a PICTURE block with an image that exceeds the size of the metadata
- *  block.
+ *  block. It is also emitted when the stream ends in the middle of the
+ *  metadata section, for example when the file is truncated or a
+ *  metadata block length extends past the end of the file.
  */
 typedef enum {
 

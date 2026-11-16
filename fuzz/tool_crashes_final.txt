@@ -1,0 +1,172 @@
+=== rc=98 fuzz/malformed/a.flip.000.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358489948 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.002.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358240981 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.004.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358612422 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.006.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359232602 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.007.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358396674 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.010.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358602372 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.011.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358898565 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.012.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358629179 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.013.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358633050 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.015.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358633511 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.018.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358768007 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.019.flac
+a.flip.019.flac: *** Got error code 3:FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM after processing 4096 samples
+a.flip.019.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 4096 samples
+Rewinding, seeking not necessary
+a.flip.019.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 4096 samples
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358937724 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.020.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358394451 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.022.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358608347 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.023.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358500086 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.025.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358473202 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.027.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358632159 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.029.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359293849 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.031.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 359013247 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.033.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358057802 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.034.flac
+a.flip.034.flac: *** Got error code 2:FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH after processing 4096 samples
+Rewinding, seeking not necessary
+a.flip.034.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 4096 samples
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358060746 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.036.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358370764 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.037.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359688073 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.041.flac
+a.flip.041.flac: *** Got error code 2:FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH after processing 12288 samples
+Rewinding, seeking not necessary
+a.flip.041.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 12288 samples
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358037225 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.042.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358633072 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.043.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358629263 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.045.flac
+a.flip.045.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 36864 samples
+a.flip.045.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 36864 samples
+Rewinding, seeking not necessary
+a.flip.045.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 36864 samples
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358000489 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.048.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 357998283 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.049.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358695551 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.050.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358606166 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.052.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358597965 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.053.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358476192 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.057.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358070086 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.058.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358626378 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.059.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -360137814 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.061.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358787130 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.062.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358611264 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.063.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358619158 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.065.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358602830 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.067.flac
+a.flip.067.flac: *** Got error code 2:FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH after processing 8192 samples
+Rewinding, seeking necessary
+Bitreader was 386 bytes short
+a.flip.067.flac: *** Got error code 0:FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC after processing 8192 samples
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358621631 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.068.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358470327 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.069.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358244321 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.070.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358599855 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.071.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359777935 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.072.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359217424 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.073.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358615915 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.074.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358817395 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.079.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358727655 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.080.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358784729 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.085.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358361032 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.086.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358789677 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.094.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358820498 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.097.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358596169 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.099.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358621665 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.102.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358840635 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.104.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 359211838 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.105.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359200787 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.106.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358632520 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.110.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -359437902 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.113.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358598677 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/a.flip.114.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: 358799955 * 6 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.002.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 969831324 + 1281952970 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.022.flac
+/home/cat/gsb/uid4015/src/libFLAC/lpc.c:999:24: runtime error: signed integer overflow: 16381 * -131770 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.026.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: -1065353632 + -1474284202 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.038.flac
+/home/cat/gsb/uid4015/src/libFLAC/lpc.c:999:24: runtime error: signed integer overflow: 16381 * 131645 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.042.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 672105351 + 1500902459 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.047.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: -869400449 + -1513140965 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.081.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 969831324 + 1281952970 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.088.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 350021433 + 1826098689 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.091.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 969831324 + 1281952970 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.095.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 969831324 + 1281952970 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.099.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 495976390 + 2061500414 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.103.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 969831324 + 1188891686 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.flip.108.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 350021433 + 1826098689 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.frame.ch15@11962.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: -251658241 + -2100653800 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/c.frame.rsvd@11962.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:582:27: runtime error: signed integer overflow: 268435455 + 1978032851 cannot be represented in type 'int'
+=== rc=98 fuzz/malformed/d.flip.095.flac
+/home/cat/gsb/uid4015/src/libFLAC/fixed.c:594:44: runtime error: signed integer overflow: -358038268 * 6 cannot be represented in type 'int'

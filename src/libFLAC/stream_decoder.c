@@ -78,7 +78,9 @@ static FILE *get_binary_stdin_(void);
 static FLAC__bool allocate_output_(FLAC__StreamDecoder *decoder, uint32_t size, uint32_t channels, uint32_t bps);
 static FLAC__bool has_id_filtered_(FLAC__StreamDecoder *decoder, FLAC__byte *id);
 static FLAC__bool find_metadata_(FLAC__StreamDecoder *decoder);
+static FLAC__bool find_metadata_inner_(FLAC__StreamDecoder *decoder);
 static FLAC__bool read_metadata_(FLAC__StreamDecoder *decoder);
+static FLAC__bool read_metadata_inner_(FLAC__StreamDecoder *decoder);
 static FLAC__bool read_metadata_streaminfo_(FLAC__StreamDecoder *decoder, FLAC__bool is_last, uint32_t length);
 static FLAC__bool read_metadata_seektable_(FLAC__StreamDecoder *decoder, FLAC__bool is_last, uint32_t length);
 static FLAC__bool read_metadata_vorbiscomment_(FLAC__StreamDecoder *decoder, FLAC__StreamMetadata_VorbisComment *obj, uint32_t length);
@@ -1653,6 +1655,18 @@ FLAC__bool has_id_filtered_(FLAC__StreamDecoder *decoder, FLAC__byte *id)
 
 FLAC__bool find_metadata_(FLAC__StreamDecoder *decoder)
 {
+	FLAC__bool ok = find_metadata_inner_(decoder);
+	if(!ok && decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM && !decoder->private_->error_has_been_sent) {
+		/* The stream ended before the metadata section could be found
+		 * (severely truncated file): report this instead of silently
+		 * signalling end-of-stream */
+		send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC);
+	}
+	return ok;
+}
+
+FLAC__bool find_metadata_inner_(FLAC__StreamDecoder *decoder)
+{
 	FLAC__uint32 x;
 	uint32_t i, id;
 	FLAC__bool first = true;
@@ -1717,6 +1731,36 @@ FLAC__bool find_metadata_(FLAC__StreamDecoder *decoder)
 }
 
 FLAC__bool read_metadata_(FLAC__StreamDecoder *decoder)
+{
+	FLAC__uint64 position = 0;
+	FLAC__bool have_position = FLAC__stream_decoder_get_decode_position(decoder, &position)? true : false;
+	FLAC__bool ok = read_metadata_inner_(decoder);
+	if(!ok) {
+		if(decoder->protected_->state == FLAC__STREAM_DECODER_READ_METADATA) {
+			/* The metadata content is inconsistent (for example a block
+			 * whose contents do not fit its declared length): report this
+			 * instead of stalling in the metadata reading state */
+			send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA);
+		}
+		else if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM ||
+		        decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_LINK) {
+			/* The stream ended inside the metadata section (truncated file
+			 * or a block with an oversized length): report this instead of
+			 * silently signalling end-of-stream. A valid stream always ends
+			 * its metadata section with a last-metadata-block flag followed
+			 * by frames, so end-of-stream here means the stream is broken.
+			 * This is only done when the decode position can be determined:
+			 * without it, the decoder might be parsing a single raw metadata
+			 * block through FLAC__metadata_object_set_raw(), which ends
+			 * exactly like this and is not an error */
+			if(have_position)
+				send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA);
+		}
+	}
+	return ok;
+}
+
+FLAC__bool read_metadata_inner_(FLAC__StreamDecoder *decoder)
 {
 	FLAC__bool is_last;
 	FLAC__uint32 i, x, type, length;
@@ -2386,8 +2430,11 @@ FLAC__bool read_frame_(FLAC__StreamDecoder *decoder, FLAC__bool *got_a_frame, FL
 	frame_crc = FLAC__CRC16_UPDATE(decoder->private_->header_warmup[1], frame_crc);
 	FLAC__bitreader_reset_read_crc16(decoder->private_->input, (FLAC__uint16)frame_crc);
 
-	if(!read_frame_header_(decoder))
+	if(!read_frame_header_(decoder)) {
+		if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM || decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_LINK)
+			send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC); /* frame truncated by end of stream */
 		return false;
+	}
 	if(decoder->protected_->state == FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC) /* means we didn't sync on a valid header */
 		return true;
 	if(!allocate_output_(decoder, decoder->private_->frame.header.blocksize, decoder->private_->frame.header.channels, decoder->private_->frame.header.bits_per_sample))
@@ -2424,8 +2471,10 @@ FLAC__bool read_frame_(FLAC__StreamDecoder *decoder, FLAC__bool *got_a_frame, FL
 		 */
 		if(!read_subframe_(decoder, channel, bps, do_full_decode)){
 			/* read_callback_ sets the state for us */
-			if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM)
+			if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM) {
+				send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC); /* frame truncated by end of stream */
 				break;
+			}
 			else
 				return false;
 		}
@@ -2434,8 +2483,11 @@ FLAC__bool read_frame_(FLAC__StreamDecoder *decoder, FLAC__bool *got_a_frame, FL
 	}
 
 	if(decoder->protected_->state != FLAC__STREAM_DECODER_END_OF_STREAM)
-		if(!read_zero_padding_(decoder))
+		if(!read_zero_padding_(decoder)) {
+			if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM || decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_LINK)
+				send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC); /* frame truncated by end of stream */
 			return false;
+		}
 
 	/*
 	 * Read the frame CRC-16 from the footer and check
@@ -2444,7 +2496,9 @@ FLAC__bool read_frame_(FLAC__StreamDecoder *decoder, FLAC__bool *got_a_frame, FL
 		frame_crc = FLAC__bitreader_get_read_crc16(decoder->private_->input);
 		if(!FLAC__bitreader_read_raw_uint32(decoder->private_->input, &x, FLAC__FRAME_FOOTER_CRC_LEN)) {
 			/* read_callback_ sets the state for us */
-			if(decoder->protected_->state != FLAC__STREAM_DECODER_END_OF_STREAM)
+			if(decoder->protected_->state == FLAC__STREAM_DECODER_END_OF_STREAM)
+				send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC); /* frame truncated by end of stream */
+			else
 				return false;
 		}
 #ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION

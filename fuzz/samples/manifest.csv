@@ -1,0 +1,25 @@
+file,category,bytes,decoder_result
+a.flip.000.flac,flip,48611,ERROR[5] FLAC__STREAM_DECODER_ERROR_STATUS_OUT_OF_BOUNDS @ offset 45656
+a.frame.bs0@8311.flac,frame,48611,ERROR[3] FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM @ offset 8317
+a.frame.bsf@8311.flac,frame,48611,ERROR[0] FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC @ offset 20677
+a.frame.ch15@8311.flac,frame,48611,ERROR[1] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER @ offset 8315
+a.frame.rsvd@8311.flac,frame,48611,ERROR[3] FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM @ offset 16384
+a.metahdr.len16777215@4.flac,metahdr,48611,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 48608
+a.metahdr.len8388608@64.flac,metahdr,48611,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 48608
+a.metahdr.si_len0@4.flac,metahdr,48611,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 42
+a.metahdr.si_len33@4.flac,metahdr,48611,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 42
+a.metahdr.type127@4.flac,metahdr,48611,clean decode (spec-compliant leniency)
+a.metahdr.type7@4.flac,metahdr,48611,clean decode (spec-compliant leniency)
+a.si.bs0_0.flac,si,48611,clean decode (spec-compliant leniency)
+a.si.bs65535_16.flac,si,48611,clean decode (spec-compliant leniency)
+a.si.fsmax.flac,si,48611,clean decode (spec-compliant leniency)
+a.trunc.000064.flac,trunc,64,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 64
+a.trunc.024305.flac,trunc,24305,ERROR[0] FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC @ offset 24305
+a.trunc.048610.flac,trunc,48610,ERROR[0] FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC @ offset 48609
+b.flip.001.flac,flip,108430,clean decode (spec-compliant leniency)
+d.trunc.000002.flac,trunc,2,ERROR[0] FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC @ offset 2
+d.trunc.000042.flac,trunc,42,ERROR[4] FLAC__STREAM_DECODER_ERROR_STATUS_BAD_METADATA @ offset 42
+valid_a.flac,valid,48611,clean decode (spec-compliant leniency)
+valid_b.flac,valid,108430,clean decode (spec-compliant leniency)
+valid_c.flac,valid,20776,clean decode (spec-compliant leniency)
+valid_d.flac,valid,8567,clean decode (spec-compliant leniency)
