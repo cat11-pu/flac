@@ -5,6 +5,7 @@ add_executable(test_libFLAC
     decoders.c
     encoders.c
     endswap.c
+    fixed_decoder.c
     format.c
     main.c
     metadata.c

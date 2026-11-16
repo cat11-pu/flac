@@ -319,6 +319,11 @@ void FLAC__bitreader_free(FLAC__BitReader *br)
 	br->last_seen_framesync = -1;
 }
 
+size_t FLAC__bitreader_get_memory_size(void)
+{
+	return sizeof(FLAC__BitReader) + sizeof(brword) * FLAC__BITREADER_DEFAULT_CAPACITY;
+}
+
 FLAC__bool FLAC__bitreader_clear(FLAC__BitReader *br)
 {
 	br->words = br->bytes = 0;

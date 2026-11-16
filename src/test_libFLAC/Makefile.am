@@ -44,6 +44,7 @@ test_libFLAC_SOURCES = \
 	decoders.c \
 	encoders.c \
 	endswap.c \
+	fixed_decoder.c \
 	format.c \
 	main.c \
 	metadata.c \
@@ -56,6 +57,7 @@ test_libFLAC_SOURCES = \
 	decoders.h \
 	encoders.h \
 	endswap.h \
+	fixed_decoder.h \
 	format.h \
 	metadata.h \
 	md5.h

@@ -158,6 +158,11 @@ typedef struct FLAC__StreamDecoderPrivate {
 	FLAC__bool internal_reset_hack; /* used only during init() so we can call reset to set up the decoder without rewinding the input */
 	FLAC__bool is_seeking;
 	FLAC__bool is_indexing; /* to be able to seek in chained streams */
+	FLAC__bool fixed_memory; /* no allocations are allowed after setup */
+	uint32_t fixed_max_blocksize;
+	uint32_t fixed_max_channels;
+	uint32_t fixed_max_bits_per_sample;
+	uint32_t fixed_max_partition_order;
 	FLAC__MD5Context md5context;
 	FLAC__byte computed_md5sum[16]; /* this is the sum we computed from the decoded data */
 	/* (the rest of these are only used for seeking) */
@@ -1540,6 +1545,11 @@ void set_defaults_(FLAC__StreamDecoder *decoder)
 	decoder->private_->metadata_callback = 0;
 	decoder->private_->error_callback = 0;
 	decoder->private_->client_data = 0;
+	decoder->private_->fixed_memory = false;
+	decoder->private_->fixed_max_blocksize = 0;
+	decoder->private_->fixed_max_channels = 0;
+	decoder->private_->fixed_max_bits_per_sample = 0;
+	decoder->private_->fixed_max_partition_order = 0;
 
 	memset(decoder->private_->metadata_filter, 0, sizeof(decoder->private_->metadata_filter));
 	decoder->private_->metadata_filter[FLAC__METADATA_TYPE_STREAMINFO] = true;
@@ -1574,6 +1584,20 @@ FLAC__bool allocate_output_(FLAC__StreamDecoder *decoder, uint32_t size, uint32_
 {
 	uint32_t i;
 	FLAC__int32 *tmp;
+
+	if(decoder->private_->fixed_memory) {
+		if(size > decoder->private_->fixed_max_blocksize ||
+		   channels > decoder->private_->fixed_max_channels ||
+		   bps > decoder->private_->fixed_max_bits_per_sample ||
+		   size > decoder->private_->output_capacity ||
+		   channels > decoder->private_->output_channels ||
+		   (bps == 32 && decoder->private_->side_subframe == 0)) {
+			send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_OUT_OF_BOUNDS);
+			decoder->protected_->state = FLAC__STREAM_DECODER_ABORTED;
+			return false;
+		}
+		return true;
+	}
 
 	if(size <= decoder->private_->output_capacity && channels <= decoder->private_->output_channels &&
 	   (bps < 32 || decoder->private_->side_subframe != 0))
@@ -1633,6 +1657,115 @@ FLAC__bool allocate_output_(FLAC__StreamDecoder *decoder, uint32_t size, uint32_
 
 	decoder->private_->output_capacity = size;
 	decoder->private_->output_channels = channels;
+
+	return true;
+}
+
+static uint32_t get_max_partition_order_(uint32_t blocksize)
+{
+	uint32_t order = 0;
+
+	while(order < 15 && (1u << (order + 1)) <= blocksize)
+		order++;
+
+	return order;
+}
+
+void FLAC__stream_decoder_set_fixed_memory_mode(FLAC__StreamDecoder *decoder)
+{
+	FLAC__ASSERT(0 != decoder);
+	FLAC__ASSERT(0 != decoder->private_);
+
+	decoder->private_->fixed_memory = true;
+}
+
+size_t FLAC__stream_decoder_get_fixed_memory_requirement(uint32_t max_blocksize, uint32_t max_channels, uint32_t max_bits_per_sample)
+{
+	size_t total;
+	size_t scratch;
+	uint32_t partition_order;
+
+	if(max_blocksize < FLAC__MIN_BLOCK_SIZE || max_blocksize > FLAC__MAX_BLOCK_SIZE ||
+	   max_channels < 1 || max_channels > FLAC__MAX_CHANNELS ||
+	   max_bits_per_sample < FLAC__MIN_BITS_PER_SAMPLE || max_bits_per_sample > FLAC__MAX_BITS_PER_SAMPLE)
+		return 0;
+
+	total = sizeof(FLAC__StreamDecoder) +
+		sizeof(FLAC__StreamDecoderProtected) +
+		sizeof(FLAC__StreamDecoderPrivate) +
+		FLAC__bitreader_get_memory_size() +
+		16u * (FLAC__STREAM_METADATA_APPLICATION_ID_LEN / 8u);
+
+	/* The decoder keeps one padded output and one aligned residual buffer per
+	 * channel. */
+	scratch = (size_t)max_channels * ((size_t)(max_blocksize + 4u) * sizeof(FLAC__int32) + (size_t)max_blocksize * sizeof(FLAC__int32));
+#ifdef FLAC__ALIGN_MALLOC_DATA
+	scratch += (size_t)max_channels * 31u;
+#endif
+	if(SIZE_MAX - total < scratch)
+		return 0;
+	total += scratch;
+
+	if(max_bits_per_sample == 32) {
+		scratch = (size_t)max_blocksize * sizeof(FLAC__int64);
+		if(SIZE_MAX - total < scratch)
+			return 0;
+		total += scratch;
+	}
+
+	partition_order = get_max_partition_order_(max_blocksize);
+	if(partition_order < 6)
+		partition_order = 6;
+	scratch = (size_t)max_channels * 2u * sizeof(FLAC__uint32) * ((size_t)1u << partition_order);
+	if(SIZE_MAX - total < scratch)
+		return 0;
+	total += scratch;
+
+	/* malloc bookkeeping and alignment slack */
+	if(SIZE_MAX - total < 8u * 64u)
+		return 0;
+	total += 8u * 64u;
+
+	return total;
+}
+
+FLAC__bool FLAC__stream_decoder_reserve_fixed_memory(FLAC__StreamDecoder *decoder, uint32_t max_blocksize, uint32_t max_channels, uint32_t max_bits_per_sample)
+{
+	uint32_t channel;
+	uint32_t partition_order;
+
+	FLAC__ASSERT(0 != decoder);
+	FLAC__ASSERT(0 != decoder->private_);
+
+	if(max_blocksize < FLAC__MIN_BLOCK_SIZE || max_blocksize > FLAC__MAX_BLOCK_SIZE ||
+	   max_channels < 1 || max_channels > FLAC__MAX_CHANNELS ||
+	   max_bits_per_sample < FLAC__MIN_BITS_PER_SAMPLE || max_bits_per_sample > FLAC__MAX_BITS_PER_SAMPLE)
+		return false;
+
+	if(decoder->private_->output_capacity != 0) {
+		if(max_blocksize > decoder->private_->output_capacity || max_channels > decoder->private_->output_channels)
+			return false;
+	}
+	else {
+		/* allocate_output_ performs all allocations while fixed mode is off. */
+		decoder->private_->fixed_memory = false;
+		if(!allocate_output_(decoder, max_blocksize, max_channels, max_bits_per_sample))
+			return false;
+	}
+
+	partition_order = get_max_partition_order_(max_blocksize);
+	for(channel = 0; channel < max_channels; channel++) {
+		if(!FLAC__format_entropy_coding_method_partitioned_rice_contents_ensure_size(&decoder->private_->partitioned_rice_contents[channel], flac_max(6u, partition_order))) {
+			decoder->protected_->state = FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR;
+			return false;
+		}
+	}
+
+	decoder->private_->fixed_max_blocksize = max_blocksize;
+	decoder->private_->fixed_max_channels = max_channels;
+	decoder->private_->fixed_max_bits_per_sample = max_bits_per_sample;
+	decoder->private_->fixed_max_partition_order = partition_order;
+	decoder->private_->fixed_memory = true;
 
 	return true;
 }
@@ -1748,12 +1881,21 @@ FLAC__bool read_metadata_(FLAC__StreamDecoder *decoder)
 		decoder->private_->has_seek_table = false;
 
 		if(length > 0) {
-			if(!read_metadata_seektable_(decoder, is_last, length))
-				return false;
+			if(decoder->private_->fixed_memory) {
+				/* Seeking is not exposed by the fixed-memory API.  Skipping
+				 * the table also keeps the memory ceiling independent of
+				 * attacker-controlled SEEKTABLE lengths. */
+				if(!FLAC__bitreader_skip_byte_block_aligned_no_crc(decoder->private_->input, length))
+					return false;
+			}
+			else {
+				if(!read_metadata_seektable_(decoder, is_last, length))
+					return false;
 
-			decoder->private_->has_seek_table = true;
-			if(!decoder->private_->is_seeking && decoder->private_->metadata_filter[FLAC__METADATA_TYPE_SEEKTABLE] && decoder->private_->metadata_callback)
-				decoder->private_->metadata_callback(decoder, &decoder->private_->seek_table, decoder->private_->client_data);
+				decoder->private_->has_seek_table = true;
+				if(!decoder->private_->is_seeking && decoder->private_->metadata_filter[FLAC__METADATA_TYPE_SEEKTABLE] && decoder->private_->metadata_callback)
+					decoder->private_->metadata_callback(decoder, &decoder->private_->seek_table, decoder->private_->client_data);
+			}
 		}
 	}
 	else {
@@ -2481,7 +2623,18 @@ FLAC__bool read_frame_(FLAC__StreamDecoder *decoder, FLAC__bool *got_a_frame, FL
 #endif
 
 	/* Check whether frames are missing, if so, add silence to compensate */
-	if(decoder->private_->last_frame_is_set && decoder->protected_->state == FLAC__STREAM_DECODER_READ_FRAME && !decoder->private_->is_seeking && do_full_decode) {
+	if(decoder->private_->fixed_memory && decoder->private_->last_frame_is_set && decoder->protected_->state == FLAC__STREAM_DECODER_READ_FRAME && do_full_decode) {
+		FLAC__ASSERT(decoder->private_->frame.header.number_type == FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER);
+		FLAC__ASSERT(decoder->private_->last_frame.header.number_type == FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER);
+		if(decoder->private_->last_frame.header.number.sample_number + decoder->private_->last_frame.header.blocksize < decoder->private_->frame.header.number.sample_number) {
+			/* Synthesizing missing frames requires temporary allocation.
+			 * In fixed mode report the gap and let the caller decide how to
+			 * recover. */
+			if(!decoder->private_->error_has_been_sent)
+				send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_MISSING_FRAME);
+		}
+	}
+	else if(decoder->private_->last_frame_is_set && decoder->protected_->state == FLAC__STREAM_DECODER_READ_FRAME && !decoder->private_->is_seeking && do_full_decode) {
 		FLAC__ASSERT(decoder->private_->frame.header.number_type == FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER);
 		FLAC__ASSERT(decoder->private_->last_frame.header.number_type == FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER);
 		if(decoder->private_->last_frame.header.number.sample_number + decoder->private_->last_frame.header.blocksize < decoder->private_->frame.header.number.sample_number) {
@@ -3308,6 +3461,12 @@ FLAC__bool read_residual_partitioned_rice_(FLAC__StreamDecoder *decoder, uint32_
 
 	/* invalid predictor and partition orders mush be handled in the callers */
 	FLAC__ASSERT(partition_order > 0? partition_samples >= predictor_order : decoder->private_->frame.header.blocksize >= predictor_order);
+
+	if(decoder->private_->fixed_memory && partition_order > decoder->private_->fixed_max_partition_order) {
+		send_error_to_client_(decoder, FLAC__STREAM_DECODER_ERROR_STATUS_OUT_OF_BOUNDS);
+		decoder->protected_->state = FLAC__STREAM_DECODER_ABORTED;
+		return false;
+	}
 
 	if(!FLAC__format_entropy_coding_method_partitioned_rice_contents_ensure_size(partitioned_rice_contents, flac_max(6u, partition_order))) {
 		decoder->protected_->state = FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR;

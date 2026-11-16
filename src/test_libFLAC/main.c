@@ -27,6 +27,7 @@
 #include "decoders.h"
 #include "encoders.h"
 #include "endswap.h"
+#include "fixed_decoder.h"
 #include "format.h"
 #include "metadata.h"
 #include "md5.h"
@@ -55,6 +56,9 @@ int main(void)
 		return 1;
 
 	if(!test_decoders())
+		return 1;
+
+	if(!test_fixed_decoder())
 		return 1;
 
 	if(!test_metadata())

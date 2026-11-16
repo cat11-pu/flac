@@ -41,6 +41,7 @@
 #include "metadata.h"
 #include "ordinals.h"
 #include "stream_decoder.h"
+#include "stream_decoder_fixed.h"
 #include "stream_encoder.h"
 
 /** \mainpage

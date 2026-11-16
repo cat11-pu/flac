@@ -57,4 +57,11 @@ typedef struct FLAC__StreamDecoderProtected {
  */
 uint32_t FLAC__stream_decoder_get_input_bytes_unconsumed(const FLAC__StreamDecoder *decoder);
 
+/*
+ * Fixed-memory helpers used by FLAC/stream_decoder_fixed.h.
+ */
+void FLAC__stream_decoder_set_fixed_memory_mode(FLAC__StreamDecoder *decoder);
+FLAC__bool FLAC__stream_decoder_reserve_fixed_memory(FLAC__StreamDecoder *decoder, uint32_t max_blocksize, uint32_t max_channels, uint32_t max_bits_per_sample);
+size_t FLAC__stream_decoder_get_fixed_memory_requirement(uint32_t max_blocksize, uint32_t max_channels, uint32_t max_bits_per_sample);
+
 #endif
