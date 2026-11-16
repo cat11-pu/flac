@@ -23,7 +23,7 @@ AM_CFLAGS = @OGG_CFLAGS@
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(srcdir)/include -I$(top_srcdir)/include
 
-check_PROGRAMS = test_seeking
+check_PROGRAMS = test_seeking sample_seek_test
 
 if OS_IS_WINDOWS
 win_utf8_lib = $(top_builddir)/src/share/win_utf8_io/libwin_utf8_io.la
@@ -36,4 +36,13 @@ test_seeking_LDADD = \
 test_seeking_SOURCES = \
 	main.c
 
-CLEANFILES = test_seeking.exe
+sample_seek_test_LDADD = \
+	$(top_builddir)/src/libFLAC/libFLAC.la \
+	$(win_utf8_lib)
+
+sample_seek_test_SOURCES = \
+	sample_seek.c \
+	sample_seek.h \
+	sample_seek_test.c
+
+CLEANFILES = test_seeking.exe sample_seek_test.exe
