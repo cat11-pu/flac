@@ -40,6 +40,8 @@ endif()
 
 configure_file(common.sh.in common.sh @ONLY)
 
+add_subdirectory(property)
+
 set(ALL_TESTS libFLAC grabbag)
 
 add_test(NAME libFLAC
