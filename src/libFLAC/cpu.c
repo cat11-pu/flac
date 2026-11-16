@@ -70,6 +70,9 @@ static const uint32_t FLAC__CPUINFO_X86_CPUID_FMA     = 0x00001000;
 static const uint32_t FLAC__CPUINFO_X86_CPUID_AVX2    = 0x00000020;
 static const uint32_t FLAC__CPUINFO_X86_CPUID_BMI2    = 0x00000100;
 
+/* this flag is in ECX of CPUID AX=80000001 */
+static const uint32_t FLAC__CPUINFO_X86_CPUID_LZCNT   = 0x00000020;
+
 static uint32_t
 cpu_xgetbv_x86(void)
 {
@@ -181,6 +184,9 @@ x86_cpu_info (FLAC__CPUInfo *info)
 		info->x86.avx2  = (flags_ebx & FLAC__CPUINFO_X86_CPUID_AVX2   ) ? true : false;
 		info->x86.bmi2  = (flags_ebx & FLAC__CPUINFO_X86_CPUID_BMI2   ) ? true : false;
 	}
+
+	cpuinfo_x86(0x80000001, &flags_eax, &flags_ebx, &flags_ecx, &flags_edx);
+	info->x86.lzcnt = (flags_ecx & FLAC__CPUINFO_X86_CPUID_LZCNT) ? true : false;
 
 	/*
 	 * now have to check for OS support of AVX instructions

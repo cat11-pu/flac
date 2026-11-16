@@ -45,6 +45,10 @@
 #include "share/compat.h"
 #include "share/endswap.h"
 
+#if FLAC__HAS_X86INTRIN
+#include <immintrin.h>
+#endif
+
 /* Things should be fastest when this matches the machine word size */
 /* WATCHOUT: if you change this you must also change the following #defines down to COUNT_ZERO_MSBS2 below to match */
 /* WATCHOUT: there are a few places where the code will not work unless brword is >= 32 bits wide */
@@ -838,6 +842,16 @@ FLAC__bool FLAC__bitreader_read_rice_signed_block(FLAC__BitReader *br, int vals[
 FLAC__SSE_TARGET("bmi2")
 FLAC__bool FLAC__bitreader_read_rice_signed_block_bmi2(FLAC__BitReader *br, int vals[], uint32_t nvals, uint32_t parameter)
 #include "deduplication/bitreader_read_rice_signed_block.c"
+
+#if FLAC__HAS_X86INTRIN
+#undef COUNT_ZERO_MSBS2
+#define COUNT_ZERO_MSBS2(word) ((uint32_t)_lzcnt_u64(word))
+FLAC__SSE_TARGET("bmi2,lzcnt")
+FLAC__bool FLAC__bitreader_read_rice_signed_block_bmi2_lzcnt(FLAC__BitReader *br, int vals[], uint32_t nvals, uint32_t parameter)
+#include "deduplication/bitreader_read_rice_signed_block.c"
+#undef COUNT_ZERO_MSBS2
+#define COUNT_ZERO_MSBS2(word) FLAC__clz2_uint64(word)
+#endif
 #endif
 
 #if 0 /* UNUSED */
